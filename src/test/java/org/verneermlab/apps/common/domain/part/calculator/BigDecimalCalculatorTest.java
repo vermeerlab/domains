@@ -1,7 +1,7 @@
 /*
  *  Copyright(C) 2021 Sanyu Academy All rights reserved.
  */
-package org.verneermlab.apps.common.domain.part.number;
+package org.verneermlab.apps.common.domain.part.calculator;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -203,6 +203,22 @@ public class BigDecimalCalculatorTest {
 
         var actual = calc1.divide(calc2);
         assertEquals(BigDecimalCalculator.builder("1").build(), actual);
+    }
+
+    @Test
+    public void testZeroDivide() {
+        String param = "200";
+        var builder1 = BigDecimalCalculator.builder(param);
+        var calc1 = builder1.build();
+
+        var builder2 = BigDecimalCalculator.builder("0");
+        var calc2 = builder2.build();
+
+        var actual1 = calc1.divide(calc2);
+        assertEquals(BigDecimalCalculator.builder("0").build(), actual1);
+
+        var actual2 = calc2.divide(calc1);
+        assertEquals(BigDecimalCalculator.builder("0").build(), actual2);
     }
 
     @Test
