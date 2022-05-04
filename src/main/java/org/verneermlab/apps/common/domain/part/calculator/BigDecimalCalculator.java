@@ -1,7 +1,7 @@
 /*
  *  Copyright(C) 2021 Sanyu Academy All rights reserved.
  */
-package org.verneermlab.apps.common.domain.part.number;
+package org.verneermlab.apps.common.domain.part.calculator;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -14,7 +14,7 @@ import java.util.Objects;
  *
  * @author Yamashita.Takahiro
  */
-public class BigDecimalCalculator implements Calculator<BigDecimalCalculator> {
+public class BigDecimalCalculator implements Plus<BigDecimalCalculator>, Minus<BigDecimalCalculator>, Multiply<BigDecimalCalculator>, Divide<BigDecimalCalculator> {
 
     private final Integer DEFAULT_SCALE = 0;
     private final RoundingMode DEFAULT_ROUND_MODE = RoundingMode.DOWN;
@@ -22,6 +22,10 @@ public class BigDecimalCalculator implements Calculator<BigDecimalCalculator> {
     private final BigDecimal value;
     private final Integer scale;
     private final RoundingMode roundingMode;
+
+    BigDecimalCalculator(BigDecimal value) {
+        this(value, null, null);
+    }
 
     BigDecimalCalculator(BigDecimal value, Integer scale, RoundingMode roundingMode) {
         this.value = value;

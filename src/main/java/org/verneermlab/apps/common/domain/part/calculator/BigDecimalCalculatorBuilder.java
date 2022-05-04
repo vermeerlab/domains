@@ -1,4 +1,4 @@
-package org.verneermlab.apps.common.domain.part.number;
+package org.verneermlab.apps.common.domain.part.calculator;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
