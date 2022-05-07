@@ -5,16 +5,19 @@ package org.verneermlab.apps.common.domain.part.calculator;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Stream;
 
 /**
- * BigDecimalの計算を行います.
+ * 計算機
  * <br>
- * 主に金額計算など業務に用いることを想定した限定したものです.
+ * BigDecimalによる計算を行います.<br>
+ * 数値の基本型（Integer, Long）も透過的に扱えるようにしています.
  *
  * @author Yamashita.Takahiro
  */
-public class BigDecimalCalculator implements Plus<BigDecimalCalculator>, Minus<BigDecimalCalculator>, Multiply<BigDecimalCalculator>, Divide<BigDecimalCalculator> {
+public class BigDecimalCalculator implements CalculatorBase {
 
     private final Integer DEFAULT_SCALE = 0;
     private final RoundingMode DEFAULT_ROUND_MODE = RoundingMode.DOWN;
@@ -23,14 +26,15 @@ public class BigDecimalCalculator implements Plus<BigDecimalCalculator>, Minus<B
     private final Integer scale;
     private final RoundingMode roundingMode;
 
-    BigDecimalCalculator(BigDecimal value) {
-        this(value, null, null);
-    }
-
     BigDecimalCalculator(BigDecimal value, Integer scale, RoundingMode roundingMode) {
         this.value = value;
-        this.scale = Objects.isNull(scale) ? DEFAULT_SCALE : scale;
-        this.roundingMode = Objects.isNull(roundingMode) ? DEFAULT_ROUND_MODE : roundingMode;
+        this.scale = Objects.isNull(scale)
+                ? DEFAULT_SCALE
+                : scale;
+
+        this.roundingMode = Objects.isNull(roundingMode)
+                ? DEFAULT_ROUND_MODE
+                : roundingMode;
     }
 
     public static BigDecimalCalculatorBuilder builder(BigDecimal value) {
@@ -52,12 +56,143 @@ public class BigDecimalCalculator implements Plus<BigDecimalCalculator>, Minus<B
         return new BigDecimalCalculatorBuilder(bigDecimal);
     }
 
-    @Override
+    /**
+     * 加算したインスタンスを返却します.
+     *
+     * @param <T> 計算対象の型
+     * @param other 計算するインスタンス
+     * @return 計算後のインスタンス
+     */
+    @SafeVarargs
+    public final <T extends CalculatorBase> BigDecimalCalculator plus(T... other) {
+        if (other.length == 1) {
+            var result = this.getCalcValue().add(other[0].getCalcValue());
+            return BigDecimalCalculator.builder(result).build();
+        }
+        BigDecimal result = Stream.of(other)
+                .map(T::getCalcValue)
+                .filter(Objects::nonNull)
+                .reduce(this.getCalcValue(), BigDecimal::add);
+
+        return BigDecimalCalculator.builder(result).build();
+    }
+
+    /**
+     * 複数要素を加算したインスタンスを返却します.
+     *
+     * 加算は複数情報を一括で処理したいケースがあるため、デフォルトでも準備しています.
+     *
+     * @param <T> 計算対象の型
+     * @param others 計算するインスタンスリスト
+     * @throws RuntimeException 引数インスタンスからクラス情報が取得出来ない場合
+     * @return 計算後のインスタンス
+     */
+    public final <T extends CalculatorBase> BigDecimalCalculator plusAll(List<T> others) {
+        BigDecimal result = others.stream()
+                .map(T::getCalcValue)
+                .filter(Objects::nonNull)
+                .reduce(this.getCalcValue(), BigDecimal::add);
+
+        return BigDecimalCalculator.builder(result).build();
+    }
+
+    /**
+     * 加算したインスタンスを返却します.
+     *
+     * @param <T> 計算対象の型
+     * @param other 計算するインスタンス
+     * @return 計算後のインスタンス
+     */
+    @SafeVarargs
+    public final <T extends CalculatorBase> BigDecimalCalculator minus(T... other) {
+        if (other.length == 1) {
+            var result = this.getCalcValue().subtract(other[0].getCalcValue());
+            return BigDecimalCalculator.builder(result).build();
+        }
+        BigDecimal result = Stream.of(other)
+                .map(T::getCalcValue)
+                .filter(Objects::nonNull)
+                .reduce(this.getCalcValue(), BigDecimal::subtract);
+
+        return BigDecimalCalculator.builder(result).build();
+    }
+
+    /**
+     * 乗算したインスタンスを返却します.
+     *
+     * @param <T> 計算対象の型
+     * @param other 計算するインスタンス
+     * @return 計算後のインスタンス
+     */
+    public final <T extends CalculatorBase> BigDecimalCalculator multiply(T other) {
+        var result = this.getCalcValue().multiply(other.getCalcValue());
+        return BigDecimalCalculator.builder(result).build();
+    }
+
+    /**
+     * 除算したインスタンスを返却します.
+     * 小数点以下の桁数（scale）と丸め（{@code RoundingMode}）はインスタンスのデフォルトを使用します.<br>
+     *
+     * @param <T> 計算対象の型
+     * @param other 計算するインスタンス
+     * @return 計算後のインスタンス.ゼロ除算の場合の戻り値はゼロを返却します（実行時例外をスローしません）
+     */
+    public final <T extends CalculatorBase> BigDecimalCalculator divide(T other) {
+        return this.divide(other, this.getScale(), this.getRoundingMode());
+    }
+
+    /**
+     * 除算したインスタンスを返却します.
+     *
+     * 小数点以下の桁数（scale）はインスタンスのデフォルトを使用します.
+     *
+     * @param <T> 計算対象の型
+     * @param other 計算するインスタンス
+     * @param roundingMode 丸めモード
+     * @return 計算後のインスタンス.ゼロ除算の場合の戻り値はゼロを返却します（実行時例外をスローしません）
+     */
+    public final <T extends CalculatorBase> BigDecimalCalculator divide(T other, RoundingMode roundingMode) {
+        return this.divide(other, this.getScale(), roundingMode);
+    }
+
+    /**
+     * 除算したインスタンスを返却します.
+     *
+     * @param <T> 計算対象の型
+     * @param other 計算するインスタンス
+     * @param scale 小数点以下の有効桁数
+     * @param roundingMode 丸めモード
+     * @return 計算後のインスタンス.ゼロ除算の場合の戻り値はゼロを返却します（実行時例外をスローしません）
+     */
+    public final <T extends CalculatorBase> BigDecimalCalculator divide(T other, int scale, RoundingMode roundingMode) {
+        if (other.getCalcValue().compareTo(BigDecimal.ZERO) == 0) {
+            return BigDecimalCalculator.builder(BigDecimal.ZERO)
+                    .scale(scale)
+                    .roundingMode(roundingMode)
+                    .build();
+        }
+
+        var result = this.getCalcValue().divide(other.getCalcValue(), scale, roundingMode);
+        return BigDecimalCalculator.builder(result)
+                .scale(scale)
+                .roundingMode(roundingMode)
+                .build();
+    }
+
+    /**
+     * インスタンスが保持しているscaleを返却します.
+     *
+     * @return プロパティで保持している値
+     */
     public Integer getScale() {
         return this.scale;
     }
 
-    @Override
+    /**
+     * インスタンスが保持しているRoundingModeを返却します.
+     *
+     * @return プロパティで保持している値
+     */
     public RoundingMode getRoundingMode() {
         return this.roundingMode;
     }
