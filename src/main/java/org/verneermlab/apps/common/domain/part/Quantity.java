@@ -22,8 +22,8 @@ import org.verneermlab.apps.common.domain.part.calculator.Plus;
 public class Quantity implements Plus<Quantity>, Minus<Quantity>, Multiply<Quantity>, Divide<Quantity> {
 
     private static final DecimalFormat decimalFormat = new DecimalFormat("#,##0.00");
-    private final Integer DEFAULT_SCALE = 0;
-    private final RoundingMode DEFAULT_ROUND_MODE = RoundingMode.HALF_UP;
+    private static final Integer DEFAULT_SCALE = 0;
+    private static final RoundingMode DEFAULT_ROUND_MODE = RoundingMode.HALF_UP;
 
     private final BigDecimalCalculator calculator;
 
@@ -32,14 +32,8 @@ public class Quantity implements Plus<Quantity>, Minus<Quantity>, Multiply<Quant
     }
 
     private Quantity(BigDecimal value) {
-        this(value, null, null);
-    }
-
-    private Quantity(BigDecimal value, Integer scale, RoundingMode roundingMode) {
-        var s = Objects.isNull(scale) ? DEFAULT_SCALE : scale;
-        var r = Objects.isNull(roundingMode) ? DEFAULT_ROUND_MODE : roundingMode;
         this.calculator = BigDecimalCalculator.builder(value)
-                .scale(s).roundingMode(r).build();
+                .scale(DEFAULT_SCALE).roundingMode(DEFAULT_ROUND_MODE).build();
     }
 
     public static Quantity of(BigDecimal value) {

@@ -23,8 +23,10 @@ import org.verneermlab.apps.common.domain.part.calculator.Plus;
 public class Percentage implements Plus<Percentage>, Minus<Percentage>, Multiply<Percentage>, Divide<Percentage> {
 
     private static final DecimalFormat decimalFormat = new DecimalFormat("#0.000");
-    private final Integer DEFAULT_SCALE = 3;
-    private final RoundingMode DEFAULT_ROUND_MODE = RoundingMode.HALF_UP;
+
+    // 小数表記で保持しているので、百分率の有効桁が３桁としたい場合、Scaleとしては２桁加算
+    private static final Integer DEFAULT_SCALE = 5;
+    private static final RoundingMode DEFAULT_ROUND_MODE = RoundingMode.HALF_UP;
 
     // 計算しやすいように少数値で保持
     private final BigDecimalCalculator calculator;
@@ -34,16 +36,10 @@ public class Percentage implements Plus<Percentage>, Minus<Percentage>, Multiply
     }
 
     public Percentage(BigDecimal value) {
-        this(value, null, null);
-    }
-
-    public Percentage(BigDecimal value, Integer scale, RoundingMode roundingMode) {
-        var decimal = value.divide(BigDecimal.valueOf(100));
-
-        var s = Objects.isNull(scale) ? DEFAULT_SCALE : scale;
-        var r = Objects.isNull(roundingMode) ? DEFAULT_ROUND_MODE : roundingMode;
+        var scale = value.scale();
+        var decimal = value.divide(BigDecimal.valueOf(100), scale + 2, RoundingMode.DOWN);
         this.calculator = BigDecimalCalculator.builder(decimal)
-                .scale(s).roundingMode(r).build();
+                .scale(DEFAULT_SCALE).roundingMode(DEFAULT_ROUND_MODE).build();
     }
 
     /**
@@ -109,7 +105,9 @@ public class Percentage implements Plus<Percentage>, Minus<Percentage>, Multiply
      */
     public static Percentage ofDecimal(String value) {
         var bigDecimal = new BigDecimal(value);
-        return Percentage.of(bigDecimal.multiply(BigDecimal.valueOf(100)));
+        var calculator = BigDecimalCalculator.builder(bigDecimal)
+                .scale(DEFAULT_SCALE).roundingMode(DEFAULT_ROUND_MODE).build();
+        return new Percentage(calculator);
     }
 
     @Override
@@ -140,12 +138,13 @@ public class Percentage implements Plus<Percentage>, Minus<Percentage>, Multiply
 
     @Override
     public <U extends Divide<U>> Percentage divide(U other, int scale, RoundingMode roundingMode) {
-        return Percentage.from(this.calculator.divide(other, scale, roundingMode));
+        var calc = this.calculator.divide(other, scale, roundingMode);
+        return Percentage.from(calc);
     }
 
     @Override
     public <U extends Divide<U>, R extends CalculatorBase> R divide(U other, int scale, RoundingMode roundingMode, Function<BigDecimal, R> newInstance) {
-        var calc = this.calculator.multiply(other);
+        var calc = this.calculator.divide(other, scale, roundingMode);
         return newInstance.apply(calc.getCalcValue());
     }
 
@@ -171,7 +170,7 @@ public class Percentage implements Plus<Percentage>, Minus<Percentage>, Multiply
     }
 
     public String toDecimal() {
-        BigDecimal result = this.calculator.getCalcValue();
+        BigDecimal result = this.getCalcValue();
         return result.toPlainString();
     }
 

@@ -5,9 +5,11 @@ package org.verneermlab.apps.common.domain.part;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
+import java.text.ParseException;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
+import org.verneermlab.apps.common.domain.part.calculator.BigDecimalCalculator;
 
 public class PriceTest {
 
@@ -134,6 +136,14 @@ public class PriceTest {
         assertEquals(20000, actual2.toInt());
     }
 
+    @Test()
+    @SuppressWarnings("unchecked")
+    public void testParseException() {
+        assertThrows(NumberFormatException.class,
+                () -> Price.ofFormatted("1", new DecimalFormat("z"))
+        );
+    }
+
     @Test
     public void testEquals() {
         var price1 = Price.ofFormatted("2,000");
@@ -143,6 +153,15 @@ public class PriceTest {
         var price3 = Price.ofFormatted("3,000");
         assertNotEquals(price1, price3);
 
+    }
+
+    @Test
+    public void testCoverage() {
+        var obj = Price.of(1);
+        obj.hashCode();
+        assertEquals(obj, obj);
+        assertNotEquals(obj, null);
+        assertNotEquals(obj, "");
     }
 
 }

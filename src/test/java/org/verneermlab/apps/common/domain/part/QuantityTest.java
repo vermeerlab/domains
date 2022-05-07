@@ -125,7 +125,7 @@ public class QuantityTest {
         var price = Price.ofNonFormat("20");
         var quantity = Quantity.ofNonFormat("10.01");
 
-        // 型の異なるモデルも乗算不（コンパイルエラーにならない）
+        // 型の異なるモデルも乗算可（コンパイルエラーにならない）
         var multipledPrice = price.multiply(quantity);
         assertEquals("200", multipledPrice.toFormatted());
 
@@ -221,6 +221,14 @@ public class QuantityTest {
         assertEquals(Percentage.of(40), actual);
     }
 
+    @Test()
+    @SuppressWarnings("unchecked")
+    public void testParseException() {
+        assertThrows(NumberFormatException.class,
+                () -> Quantity.ofFormatted("1", new DecimalFormat("z"))
+        );
+    }
+
     @Test
     public void testEquals() {
         var quantity1 = Quantity.ofFormatted("2,000");
@@ -232,4 +240,12 @@ public class QuantityTest {
 
     }
 
+    @Test
+    public void testCoverage() {
+        var obj = Quantity.of(1);
+        obj.hashCode();
+        assertEquals(obj, obj);
+        assertNotEquals(obj, null);
+        assertNotEquals(obj, "");
+    }
 }
