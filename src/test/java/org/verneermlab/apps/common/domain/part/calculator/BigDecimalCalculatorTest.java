@@ -298,7 +298,6 @@ public class BigDecimalCalculatorTest {
         assertEquals(calc, calc);
         assertNotEquals(calc, null);
         assertNotEquals(calc, "");
-
     }
 
 }
