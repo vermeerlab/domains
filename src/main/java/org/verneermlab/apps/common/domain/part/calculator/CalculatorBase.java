@@ -5,17 +5,16 @@ import java.math.BigDecimal;
 /**
  * 計算処理の基底.
  *
- * @param <T> 実装クラスの型
  * @author Yamashita.Takahiro
  */
-public interface CalculatorBase<T extends CalculatorBase<T>> {
+public interface CalculatorBase {
 
     /**
      * 計算に使用するプロパティ値を返却します.
      *
      * @return 計算に使用するプロパティ値
      */
-    default BigDecimal getValue() {
+    default BigDecimal getCalcValue() {
         return this.toBigDecimal();
     }
 

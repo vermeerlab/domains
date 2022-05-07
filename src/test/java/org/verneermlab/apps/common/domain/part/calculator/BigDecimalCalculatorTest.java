@@ -64,35 +64,21 @@ public class BigDecimalCalculatorTest {
     }
 
     @Test
+    public void testGetScaleDefault() {
+        String param = "200";
+        var builder = BigDecimalCalculator.builder(param).scale(2);
+        var calc = builder.build();
+
+        assertEquals(2, calc.getScale());
+    }
+
+    @Test
     public void testGetRoundingMode() {
         String param = "200";
         var builder = BigDecimalCalculator.builder(param);
         var calc = builder.build();
 
         assertEquals(RoundingMode.DOWN, calc.getRoundingMode());
-    }
-
-    @Test
-    public void testEquals() {
-        String param = "200";
-        var builder1 = BigDecimalCalculator.builder(param);
-        var calc1 = builder1.build();
-
-        var builder2 = BigDecimalCalculator.builder(param);
-        var calc2 = builder2.build();
-        assertEquals(calc1, calc2);
-    }
-
-    @Test
-    public void testNotEquals() {
-        String param1 = "200";
-        var builder1 = BigDecimalCalculator.builder(param1);
-        var calc1 = builder1.build();
-
-        String param2 = "100";
-        var builder2 = BigDecimalCalculator.builder(param2);
-        var calc2 = builder2.build();
-        assertNotEquals(calc1, calc2);
     }
 
     @Test
@@ -174,25 +160,6 @@ public class BigDecimalCalculatorTest {
     }
 
     @Test
-    public void testMultiplyMulti() {
-        String param1 = "100";
-        var builder1 = BigDecimalCalculator.builder(param1);
-        var calc1 = builder1.build();
-
-        String param2 = "200";
-        var builder2 = BigDecimalCalculator.builder(param2);
-        var calc2 = builder2.build();
-
-        String param3 = "300";
-        var builder3 = BigDecimalCalculator.builder(param3);
-        var calc3 = builder3.build();
-
-        var actual = calc1.multiply(calc2, calc3);
-        assertEquals(6000000, actual.toInt());
-
-    }
-
-    @Test
     public void testDivide() {
         String param = "200";
         var builder1 = BigDecimalCalculator.builder(param);
@@ -256,6 +223,20 @@ public class BigDecimalCalculatorTest {
     }
 
     @Test
+    public void testDivideRoundingMode() {
+        String param1 = "100";
+        var builder1 = BigDecimalCalculator.builder(param1);
+        var calc1 = builder1.build();
+
+        String param2 = "200";
+        var builder2 = BigDecimalCalculator.builder(param2);
+        var calc2 = builder2.build();
+
+        var actual = calc1.divide(calc2, RoundingMode.UP);
+        assertEquals(BigDecimalCalculator.builder("1").build(), actual);
+    }
+
+    @Test
     public void testDivideScale() {
         String param1 = "100";
         var builder1 = BigDecimalCalculator.builder(param1);
@@ -286,4 +267,38 @@ public class BigDecimalCalculatorTest {
         var actual = calc1.plusAll(List.of(calc2, calc3));
         assertEquals(600, actual.toInt());
     }
+
+    @Test
+    public void testEquals() {
+        String param = "200";
+        var builder1 = BigDecimalCalculator.builder(param);
+        var calc1 = builder1.build();
+
+        var builder2 = BigDecimalCalculator.builder(param);
+        var calc2 = builder2.build();
+        assertEquals(calc1, calc2);
+    }
+
+    @Test
+    public void testNotEquals() {
+        String param1 = "200";
+        var builder1 = BigDecimalCalculator.builder(param1);
+        var calc1 = builder1.build();
+
+        String param2 = "100";
+        var builder2 = BigDecimalCalculator.builder(param2);
+        var calc2 = builder2.build();
+        assertNotEquals(calc1, calc2);
+    }
+
+    @Test
+    public void testCoverage() {
+        var calc = BigDecimalCalculator.builder("1").build();
+        calc.hashCode();
+        assertEquals(calc, calc);
+        assertNotEquals(calc, null);
+        assertNotEquals(calc, "");
+
+    }
+
 }

@@ -3,7 +3,11 @@ package org.verneermlab.apps.common.domain.part;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.ParseException;
+import java.util.List;
 import java.util.Objects;
+import java.util.function.Function;
+import org.verneermlab.apps.common.domain.part.calculator.BigDecimalCalculator;
+import org.verneermlab.apps.common.domain.part.calculator.CalculatorBase;
 import org.verneermlab.apps.common.domain.part.calculator.Minus;
 import org.verneermlab.apps.common.domain.part.calculator.Multiply;
 import org.verneermlab.apps.common.domain.part.calculator.Plus;
@@ -16,10 +20,14 @@ import org.verneermlab.apps.common.domain.part.calculator.Plus;
 public class Price implements Plus<Price>, Minus<Price>, Multiply<Price> {
 
     private static final DecimalFormat decimalFormat = new DecimalFormat("#,##0");
-    private final BigDecimal value;
+    private final BigDecimalCalculator calculator;
 
-    public Price(BigDecimal value) {
-        this.value = value;
+    private Price(BigDecimalCalculator calculator) {
+        this.calculator = calculator;
+    }
+
+    private Price(BigDecimal value) {
+        this.calculator = BigDecimalCalculator.builder(value).build();
     }
 
     public static Price of(BigDecimal value) {
@@ -34,6 +42,10 @@ public class Price implements Plus<Price>, Minus<Price>, Multiply<Price> {
     public static Price of(Long value) {
         var bigDecimal = BigDecimal.valueOf(value);
         return Price.of(bigDecimal);
+    }
+
+    static Price from(BigDecimalCalculator calculator) {
+        return new Price(calculator);
     }
 
     public static Price ofNonFormat(String value) {
@@ -56,12 +68,39 @@ public class Price implements Plus<Price>, Minus<Price>, Multiply<Price> {
     }
 
     @Override
+    @SafeVarargs
+    public final Price plus(Price... other) {
+        return Price.from(this.calculator.plus(other));
+    }
+
+    @Override
+    public Price plusAll(List<Price> others) {
+        return Price.from(this.calculator.plusAll(others));
+    }
+
+    @Override
+    public Price minus(Price... other) {
+        return Price.from(this.calculator.minus(other));
+    }
+
+    @Override
+    public <U extends Multiply<U>> Price multiply(U other) {
+        return Price.from(this.calculator.multiply(other));
+    }
+
+    @Override
+    public <U extends Multiply<U>, R extends CalculatorBase> R multiply(U other, Function<BigDecimal, R> newInstance) {
+        var calc = this.calculator.multiply(other);
+        return newInstance.apply(calc.getCalcValue());
+    }
+
+    @Override
     public BigDecimal toBigDecimal() {
-        return this.value;
+        return this.calculator.toBigDecimal();
     }
 
     public String toNonFormat() {
-        return this.value.toPlainString();
+        return this.calculator.toBigDecimal().toPlainString();
     }
 
     public String toFormatted() {
@@ -69,13 +108,13 @@ public class Price implements Plus<Price>, Minus<Price>, Multiply<Price> {
     }
 
     public String toFormatted(DecimalFormat decimalFormat) {
-        return decimalFormat.format(this.value);
+        return decimalFormat.format(this.toBigDecimal());
     }
 
     @Override
     public int hashCode() {
         int hash = 5;
-        hash = 41 * hash + Objects.hashCode(this.value);
+        hash = 41 * hash + Objects.hashCode(this.toBigDecimal());
         return hash;
     }
 
@@ -91,7 +130,7 @@ public class Price implements Plus<Price>, Minus<Price>, Multiply<Price> {
             return false;
         }
         final Price other = (Price) obj;
-        return this.value.compareTo(other.value) == 0;
+        return this.calculator.equals(other.calculator);
     }
 
 }

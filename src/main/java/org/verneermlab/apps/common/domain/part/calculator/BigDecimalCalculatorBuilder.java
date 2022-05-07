@@ -6,20 +6,14 @@ import java.math.RoundingMode;
 public class BigDecimalCalculatorBuilder {
 
     private BigDecimal value;
-    private int scale;
+    private Integer scale;
     private RoundingMode roundingMode;
 
     public BigDecimalCalculatorBuilder(BigDecimal value) {
         this.value = value;
     }
 
-    public BigDecimalCalculatorBuilder(BigDecimal value, int scale, RoundingMode roundingMode) {
-        this.value = value;
-        this.scale = scale;
-        this.roundingMode = roundingMode;
-    }
-
-    public BigDecimalCalculatorBuilder scale(int scale) {
+    public BigDecimalCalculatorBuilder scale(Integer scale) {
         this.scale = scale;
         return this;
     }

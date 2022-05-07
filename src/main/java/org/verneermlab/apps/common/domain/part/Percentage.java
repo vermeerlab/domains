@@ -3,7 +3,11 @@ package org.verneermlab.apps.common.domain.part;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
+import java.util.List;
 import java.util.Objects;
+import java.util.function.Function;
+import org.verneermlab.apps.common.domain.part.calculator.BigDecimalCalculator;
+import org.verneermlab.apps.common.domain.part.calculator.CalculatorBase;
 import org.verneermlab.apps.common.domain.part.calculator.Divide;
 import org.verneermlab.apps.common.domain.part.calculator.Minus;
 import org.verneermlab.apps.common.domain.part.calculator.Multiply;
@@ -23,10 +27,11 @@ public class Percentage implements Plus<Percentage>, Minus<Percentage>, Multiply
     private final RoundingMode DEFAULT_ROUND_MODE = RoundingMode.HALF_UP;
 
     // 計算しやすいように少数値で保持
-    private final BigDecimal value;
+    private final BigDecimalCalculator calculator;
 
-    private final Integer scale;
-    private final RoundingMode roundingMode;
+    private Percentage(BigDecimalCalculator calculator) {
+        this.calculator = calculator;
+    }
 
     public Percentage(BigDecimal value) {
         this(value, null, null);
@@ -35,9 +40,10 @@ public class Percentage implements Plus<Percentage>, Minus<Percentage>, Multiply
     public Percentage(BigDecimal value, Integer scale, RoundingMode roundingMode) {
         var decimal = value.divide(BigDecimal.valueOf(100));
 
-        this.value = decimal;
-        this.scale = Objects.isNull(scale) ? DEFAULT_SCALE : scale;
-        this.roundingMode = Objects.isNull(roundingMode) ? DEFAULT_ROUND_MODE : roundingMode;
+        var s = Objects.isNull(scale) ? DEFAULT_SCALE : scale;
+        var r = Objects.isNull(roundingMode) ? DEFAULT_ROUND_MODE : roundingMode;
+        this.calculator = BigDecimalCalculator.builder(decimal)
+                .scale(s).roundingMode(r).build();
     }
 
     /**
@@ -72,6 +78,10 @@ public class Percentage implements Plus<Percentage>, Minus<Percentage>, Multiply
         return Percentage.of(bigDecimal);
     }
 
+    static Percentage from(BigDecimalCalculator calculator) {
+        return new Percentage(calculator);
+    }
+
     /**
      * 百分率表記からインスタンスを生成します.
      * <br>
@@ -103,32 +113,70 @@ public class Percentage implements Plus<Percentage>, Minus<Percentage>, Multiply
     }
 
     @Override
+    public Percentage plus(Percentage... other) {
+        return Percentage.from(this.calculator.plus(other));
+    }
+
+    @Override
+    public Percentage plusAll(List<Percentage> others) {
+        return Percentage.from(this.calculator.plusAll(others));
+    }
+
+    @Override
+    public Percentage minus(Percentage... other) {
+        return Percentage.from(this.calculator.minus(other));
+    }
+
+    @Override
+    public <U extends Multiply<U>> Percentage multiply(U other) {
+        return Percentage.from(this.calculator.multiply(other));
+    }
+
+    @Override
+    public <U extends Multiply<U>, R extends CalculatorBase> R multiply(U other, Function<BigDecimal, R> newInstance) {
+        var calc = this.calculator.multiply(other);
+        return newInstance.apply(calc.getCalcValue());
+    }
+
+    @Override
+    public <U extends Divide<U>> Percentage divide(U other, int scale, RoundingMode roundingMode) {
+        return Percentage.from(this.calculator.divide(other, scale, roundingMode));
+    }
+
+    @Override
+    public <U extends Divide<U>, R extends CalculatorBase> R divide(U other, int scale, RoundingMode roundingMode, Function<BigDecimal, R> newInstance) {
+        var calc = this.calculator.multiply(other);
+        return newInstance.apply(calc.getCalcValue());
+    }
+
+    @Override
     public Integer getScale() {
-        return this.scale;
+        return this.calculator.getScale();
     }
 
     @Override
     public RoundingMode getRoundingMode() {
-        return this.roundingMode;
+        return this.calculator.getRoundingMode();
     }
 
     @Override
-    public BigDecimal getValue() {
-        return this.value;
+    public BigDecimal getCalcValue() {
+        return this.calculator.getCalcValue();
     }
 
     @Override
     public BigDecimal toBigDecimal() {
-        return this.value.multiply(BigDecimal.valueOf(100));
+        return this.calculator.getCalcValue()
+                .multiply(BigDecimal.valueOf(100));
     }
 
     public String toDecimal() {
-        BigDecimal result = this.value;
+        BigDecimal result = this.calculator.getCalcValue();
         return result.toPlainString();
     }
 
     public String toNonFormat() {
-        return this.value.multiply(BigDecimal.valueOf(100)).toPlainString();
+        return this.toBigDecimal().toPlainString();
     }
 
     public String toFormatted() {
@@ -136,13 +184,13 @@ public class Percentage implements Plus<Percentage>, Minus<Percentage>, Multiply
     }
 
     public String toFormatted(DecimalFormat decimalFormat) {
-        return decimalFormat.format(this.value.multiply(BigDecimal.valueOf(100)));
+        return decimalFormat.format(this.toBigDecimal());
     }
 
     @Override
     public int hashCode() {
         int hash = 5;
-        hash = 59 * hash + Objects.hashCode(this.value);
+        hash = 59 * hash + Objects.hashCode(this.getCalcValue());
         return hash;
     }
 
@@ -158,6 +206,7 @@ public class Percentage implements Plus<Percentage>, Minus<Percentage>, Multiply
             return false;
         }
         final Percentage other = (Percentage) obj;
-        return this.value.compareTo(other.value) == 0;
+        return this.calculator.equals(other.calculator);
     }
+
 }

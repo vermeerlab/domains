@@ -55,6 +55,20 @@ public class PercentageTest {
     }
 
     @Test
+    public void testQuantityPercentage() {
+        var percentage = Percentage.of(10);
+        var quantity = Quantity.of(20);
+
+        //百分率なので、％表記
+        assertEquals(200, percentage.multiply(quantity).toInt());
+        assertEquals(Percentage.of(200), percentage.multiply(quantity));
+
+        //量は％表記の乗算
+        assertEquals(2, quantity.multiply(percentage).toInt());
+        assertEquals(Quantity.of(2), quantity.multiply(percentage));
+    }
+
+    @Test
     public void testEquals() {
         var percentage1 = Percentage.ofDecimal("0.1001");
         var percentage2 = Percentage.ofDecimal("0.1001");
@@ -63,18 +77,6 @@ public class PercentageTest {
         var percentage3 = Percentage.ofDecimal("0.1002");
         assertNotEquals(percentage1, percentage3);
 
-    }
-
-    @Test
-    public void testQuantityPercentage() {
-        var percentage = Percentage.of(10);
-        var quantity = Quantity.of(20);
-
-        assertEquals(2, percentage.multiply(quantity).toInt());
-        assertEquals(Percentage.of(2), percentage.multiply(quantity));
-
-        assertEquals(2, quantity.multiply(percentage).toInt());
-        assertEquals(Quantity.of(2), quantity.multiply(percentage));
     }
 
 }

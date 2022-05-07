@@ -4,8 +4,7 @@
 package org.verneermlab.apps.common.domain.part.calculator;
 
 import java.math.BigDecimal;
-import java.util.Objects;
-import java.util.stream.Stream;
+import java.util.function.Function;
 
 /**
  * 乗算計算
@@ -13,45 +12,25 @@ import java.util.stream.Stream;
  * @param <T> 実装クラスの型
  * @author Yamashita.Takahiro
  */
-public interface Multiply<T extends Multiply<T>> extends CalculatorBase<T> {
+public interface Multiply<T extends Multiply<T>> extends CalculatorBase {
 
     /**
      * 乗算したインスタンスを返却します.
      *
-     * @param <U> 計算するインスタンスの型
+     * @param <U> 引数の型, 乗算は自身と異なるクラスを指定できます.
      * @param other 計算するインスタンス
      * @return 計算後のインスタンス
      */
-    @SuppressWarnings("unchecked")
-    default <U extends Multiply<U>> T multiply(U... other) {
-        if (other.length == 1) {
-            var result = this.getValue().multiply(other[0].getValue());
-            return newInstance(result);
-        }
-        BigDecimal result = Stream.of(other)
-                .map(U::getValue)
-                .filter(Objects::nonNull)
-                .reduce(this.getValue(), BigDecimal::multiply);
-
-        return newInstance(result);
-    }
+    public <U extends Multiply<U>> T multiply(U other);
 
     /**
-     * インスタンスを生成します.
+     * 乗算したインスタンスを返却します.
      *
-     * @param value 保持させる値
-     * @return 生成したインスタンス
+     * @param <U> 引数の型, 乗算は自身と異なるクラスを指定できます.
+     * @param <R> 戻り値の型
+     * @param other 計算するインスタンス
+     * @param newInstance 任意のクラスを生成するコンストラクタもしくはFactoryメソッド
+     * @return 計算後のインスタンス
      */
-    @SuppressWarnings("unchecked")
-    private T newInstance(BigDecimal value) {
-        try {
-            Class<?> clazz = this.getClass();
-            return (T) clazz
-                    .getDeclaredConstructor(BigDecimal.class)
-                    .newInstance(value);
-        } catch (ReflectiveOperationException ex) {
-            throw new RuntimeException("Calculator could not get Other Class", ex);
-        }
-    }
-
+    public <U extends Multiply<U>, R extends CalculatorBase> R multiply(U other, Function<BigDecimal, R> newInstance);
 }
