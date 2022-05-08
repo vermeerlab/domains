@@ -1,15 +1,10 @@
-/*
- *  Copyright(C) 2021 Sanyu Academy All rights reserved.
- */
 package org.verneermlab.apps.common.domain.part;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
-import java.text.ParseException;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
-import org.verneermlab.apps.common.domain.part.calculator.BigDecimalCalculator;
 
 public class PriceTest {
 

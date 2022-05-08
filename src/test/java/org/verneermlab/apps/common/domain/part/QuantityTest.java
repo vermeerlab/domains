@@ -1,6 +1,3 @@
-/*
- *  Copyright(C) 2021 Sanyu Academy All rights reserved.
- */
 package org.verneermlab.apps.common.domain.part;
 
 import java.math.BigDecimal;
