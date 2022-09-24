@@ -202,10 +202,7 @@ public class Text implements IsEmpty {
       return false;
     }
     final Text other = (Text) obj;
-    if (!Objects.equals(this.value.orElse(null), other.value.orElse(null))) {
-      return false;
-    }
-    return true;
+    return Objects.equals(this.value.orElse(null), other.value.orElse(null));
   }
 
   @Override

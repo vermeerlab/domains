@@ -16,8 +16,9 @@ import org.verneermlab.apps.common.domain.part.calculator.Plus;
 
 /**
  * 率.
- * <br>
+ * <p>
  * 税率のように百分率を基準として小数点表記（例：4.75%）をすることを想定して情報を保持します.
+ * </p>
  *
  * @author Yamashita.Takahiro
  */

@@ -262,10 +262,7 @@ public class BigDecimalCalculator implements Calculator {
       return false;
     }
     final BigDecimalCalculator other = (BigDecimalCalculator) obj;
-    if (this.toBigDecimal().compareTo(other.toBigDecimal()) == 0) {
-      return true;
-    }
-    return false;
+    return this.toBigDecimal().compareTo(other.toBigDecimal()) == 0;
   }
 
   @Override
