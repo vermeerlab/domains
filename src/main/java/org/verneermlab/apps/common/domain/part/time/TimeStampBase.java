@@ -1,6 +1,5 @@
 package org.verneermlab.apps.common.domain.part.time;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -74,8 +73,8 @@ public class TimeStampBase implements IsEmpty {
       return TimeStampBase.init();
     }
 
-    var converted = LocalDateTime.parse(date, formatterYYYYMMDD);
-    return TimeStampBase.of(converted);
+    var dateBase = DateBase.fromYyyyMmDd(date);
+    return TimeStampBase.from(dateBase);
   }
 
   /**
@@ -85,7 +84,7 @@ public class TimeStampBase implements IsEmpty {
    * @return 生成したインスタンス
    */
   public static TimeStampBase from(DateBase dateBase) {
-    return TimeStampBase.fromYyyyMmDd(dateBase.toYyyyMmDd().orElse(null));
+    return TimeStampBase.of(dateBase.toLocalDateTime());
   }
 
   /**
@@ -182,6 +181,36 @@ public class TimeStampBase implements IsEmpty {
     }
 
     var result = TimeStampBase.of(this.value.get().minusSeconds(seconds));
+    return result;
+  }
+
+  /**
+   * 指定数を加算します.
+   *
+   * @param minutes 加算分数
+   * @return 加算後のインスタンス
+   */
+  public TimeStampBase plusMinutes(long minutes) {
+    if (this.isEmpty()) {
+      return TimeStampBase.init();
+    }
+
+    var result = TimeStampBase.of(this.value.get().plusMinutes(minutes));
+    return result;
+  }
+
+  /**
+   * 指定数を減算します.
+   *
+   * @param minutes 減算分数
+   * @return 加算後のインスタンス
+   */
+  public TimeStampBase minusMinutes(long minutes) {
+    if (this.isEmpty()) {
+      return TimeStampBase.init();
+    }
+
+    var result = TimeStampBase.of(this.value.get().minusMinutes(minutes));
     return result;
   }
 
@@ -335,26 +364,6 @@ public class TimeStampBase implements IsEmpty {
   }
 
   /**
-   * 指定日との月数の差異を返却します.
-   *
-   * @param after 指定日
-   * @return 月数
-   */
-  public BigDecimal rangeMonth(TimeStampBase after) {
-    return this.toDateBase().rangeMonth(after.toDateBase());
-  }
-
-  /**
-   * 指定日との月数の差異を返却します.
-   *
-   * @param after 指定日
-   * @return 月数（0.5単位での月数）
-   */
-  public BigDecimal rangeMonthHalfUp(TimeStampBase after) {
-    return this.toDateBase().rangeMonthHalfUp(after.toDateBase());
-  }
-
-  /**
    * 保持している値を返却します.
    *
    * @return 保持している値
@@ -370,7 +379,10 @@ public class TimeStampBase implements IsEmpty {
    * @return 等しい場合はtrue、または いずれかのインスタンスの値が<code>Optional.empty</code>の場合はfalse
    */
   public boolean isEquel(TimeStampBase other) {
-    if ((this.isEmpty() && other.isEmpty()) == false) {
+    if (this.isEmpty() && other.isEmpty()) {
+      return true;
+    }
+    if (this.isEmpty() || other.isEmpty()) {
       return false;
     }
     var result = this.value.get().isEqual(other.getValue().get());
@@ -394,7 +406,7 @@ public class TimeStampBase implements IsEmpty {
    * @return 比較対象が以前（本インスタンス（this） ＜ 比較対象（other））の日時の場合はtrue、または いずれかのインスタンスの値が<code>Optional.empty</code>の場合はfalse
    */
   public boolean isBefore(TimeStampBase other) {
-    if ((this.isEmpty() && other.isEmpty()) == false) {
+    if (this.isEmpty() || other.isEmpty()) {
       return false;
     }
     var result = this.value.get().isBefore(other.getValue().get());
@@ -408,7 +420,7 @@ public class TimeStampBase implements IsEmpty {
    * @return 比較対象が以降（比較対象（other） ＜ 本インスタンス（this））の日時の場合はtrue、または いずれかのインスタンスの値が<code>Optional.empty</code>の場合はfalse
    */
   public boolean isAfter(TimeStampBase other) {
-    if ((this.isEmpty() && other.isEmpty()) == false) {
+    if (this.isEmpty() || other.isEmpty()) {
       return false;
     }
     var result = this.value.get().isAfter(other.getValue().get());
