@@ -313,6 +313,7 @@ public class DateBase implements IsEmpty {
   @Override
   public int hashCode() {
     int hash = 5;
+    hash = 13 * hash + Objects.hashCode(this.value);
     return hash;
   }
 

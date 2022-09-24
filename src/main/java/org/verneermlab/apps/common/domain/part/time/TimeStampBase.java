@@ -433,8 +433,10 @@ public class TimeStampBase implements IsEmpty {
 
   @Override
   public int hashCode() {
-    int hash = 11;
+    int hash = 5;
+    hash = 11 * hash + Objects.hashCode(this.value);
     return hash;
+
   }
 
   @Override
