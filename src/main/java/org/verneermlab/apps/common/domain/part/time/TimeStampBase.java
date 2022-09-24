@@ -18,7 +18,6 @@ import org.verneermlab.apps.common.domain.type.IsEmpty;
 public class TimeStampBase implements IsEmpty {
 
   private static final ZoneId timeZoneId = TimeZone.getTimeZone("Asia/Tokyo").toZoneId();
-  private static final DateTimeFormatter formatterYYYYMMDD = DateTimeFormatter.ofPattern("uuuuMMdd");
   private static final DateTimeFormatter formatterYYYYMMDD_Separator
           = DateTimeFormatter.ofPattern("uuuu/MM/dd");
   private static final DateTimeFormatter formatterYYYYMMDD_Second
