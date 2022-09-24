@@ -107,6 +107,37 @@ public class TextTest {
   }
 
   @Test
+  public void testLength() {
+    var text1 = Text.of("aa");
+    assertEquals(2, text1.length());
+
+    var text2 = Text.of("");
+    assertEquals(0, text2.length());
+
+    var text3 = Text.init();
+    assertEquals(0, text3.length());
+
+    var text4 = Text.of("🍀");
+    assertEquals(1, text4.length());
+
+    var text5 = Text.of("👪");
+    assertEquals(1, text5.length());
+
+    var text6 = Text.of("𩸽");
+    assertEquals(1, text6.length());
+
+    var text7 = Text.of("飴󠄁");
+    assertEquals(1, text7.length());
+
+    var text8 = Text.of("\uD867\uDE3D");  // U+29E3D
+    assertEquals(1, text8.length());
+
+    var text9 = Text.of("飴\uDB40\uDD01");  // U+98F4 U+E0101
+    assertEquals(1, text9.length());
+
+  }
+
+  @Test
   public void testHasText() {
     var text1 = Text.of("aa");
     assertTrue(text1.hasText());

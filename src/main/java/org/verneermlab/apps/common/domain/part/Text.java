@@ -1,5 +1,6 @@
 package org.verneermlab.apps.common.domain.part;
 
+import java.text.BreakIterator;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Optional;
@@ -167,6 +168,31 @@ public class Text implements IsEmpty {
   public boolean contains(Text targetText) {
     var result = this.get().contains(targetText.get());
     return result;
+  }
+
+  /**
+   * 保持している文字数を返却します.
+   * <p>
+   * サロゲートペアを考慮した文字数を返却します.
+   * </p>
+   *
+   * @return 保持している文字数を返却します.<code>null</code>を保持している場合は 0 を返却します.
+   */
+  public int length() {
+    if (this.isEmpty()) {
+      return 0;
+    }
+
+    BreakIterator iterator = BreakIterator.getCharacterInstance();
+    iterator.setText(this.get());
+
+    int current = iterator.next();
+    int count = 0;
+    while (current != BreakIterator.DONE) {
+      count++;
+      current = iterator.next();
+    }
+    return count;
   }
 
   /**
