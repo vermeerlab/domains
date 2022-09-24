@@ -33,7 +33,7 @@ public class DateBaseTest {
   }
 
   @Test
-  public void testFromYyyyMdDd() {
+  public void testFromYyyyMmDd() {
     var actual = DateBase.fromYyyyMmDd("20000101");
     assertEquals(LocalDate.of(2000, 1, 1), actual.getValue().get());
 
