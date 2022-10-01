@@ -77,6 +77,39 @@ public class TextTest {
   }
 
   @Test
+  public void testSubstringBegin() {
+    var text1 = Text.of("123456789");
+    assertEquals("123456789", text1.substring(0).get());
+    assertEquals("123456789", "123456789".substring(0));
+
+    var text2 = Text.of("🍀𩸽飴\uDB40\uDD01");
+    assertEquals("🍀𩸽飴\uDB40\uDD01", text2.substring(0).get());
+    assertEquals("𩸽飴\uDB40\uDD01", text2.substring(1).get());
+
+    assertEquals("", text2.substring(100).get());
+    assertEquals("", "123456789".substring(9));
+  }
+
+  @Test
+  public void testSubstring() {
+    var text1 = Text.of("123456789");
+
+    assertEquals("", text1.substring(-1, 1).get());
+
+    assertEquals("1", text1.substring(0, 1).get());
+    assertEquals("1", "123456789".substring(0, 1));
+
+    var text2 = Text.of("🍀𩸽飴\uDB40\uDD01");
+    assertEquals("🍀", text2.substring(0, 1).get());
+    assertEquals("𩸽", text2.substring(1, 2).get());
+
+    assertEquals("", text2.substring(1, 1).get());
+    assertEquals("", "123456789".substring(1, 1));
+
+    assertEquals("🍀𩸽飴\uDB40\uDD01", text2.substring(0, 100).get());
+  }
+
+  @Test
   public void testApply() {
 
     var text = Text.of("aaa");

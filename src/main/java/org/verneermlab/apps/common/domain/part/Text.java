@@ -134,6 +134,54 @@ public class Text implements IsEmpty {
   }
 
   /**
+   * 文字列を取得したインスタンスを返却します.
+   *
+   * @param beginIndex 開始位置
+   * @return 取得したインスタンス. 開始位置がマイナスの場合は空インスタンス. 開始位置が文字列長を超えていた場合は同じ値のインスタンス.
+   */
+  public Text substring(int beginIndex) {
+    return this.substring(beginIndex, Integer.MAX_VALUE);
+  }
+
+  /**
+   * 文字列を取得したインスタンスを返却します.
+   *
+   * @param beginIndex 開始位置
+   * @param endIndex 終了位置
+   * @return 取得したインスタンス. 開始位置がマイナスの場合または終了位置が開始位置よりも起きい場合は空インスタンス. 開始位置が文字列長を超えていた場合は同じ値のインスタンス.
+   */
+  public Text substring(int beginIndex, int endIndex) {
+    if (beginIndex < 0) {
+      return Text.init();
+    }
+
+    int length = this.length();
+    int endIndexPos = length < endIndex ? length : endIndex;
+
+    if (endIndexPos < beginIndex) {
+      return Text.init();
+    }
+
+    if (beginIndex == 0 && length <= endIndex) {
+      return Text.of(value);
+    }
+
+    BreakIterator iterator = BreakIterator.getCharacterInstance();
+    iterator.setText(this.get());
+
+    var strArray = new ArrayList<String>();
+    for (int start = iterator.first(), end = iterator.next();
+            end != BreakIterator.DONE; start = end, end = iterator.next()) {
+      String str = value.get().substring(start, end);
+      strArray.add(str);
+    }
+
+    var subList = strArray.subList(beginIndex, endIndexPos);
+    var subStr = String.join("", subList);
+    return Text.of(subStr);
+  }
+
+  /**
    * callbackを用いて保持している値を編集します.
    * <p>
    * プロパティが<code>null</code>の場合は空文字として処理をします.
