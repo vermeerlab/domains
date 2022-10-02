@@ -50,14 +50,20 @@ public class TimeStampBaseTest {
 
   @Test
   public void testToYyyyMmDdWithSeparator() {
-    var actual = TimeStampBase.fromYyyyMmDd("20000101");
-    assertEquals("2000/01/01", actual.toYyyyMmDdWithSeparator().get());
+    var actual1 = TimeStampBase.init();
+    assertEquals(Optional.empty(), actual1.toYyyyMmDdWithSeparator());
+
+    var actual2 = TimeStampBase.fromYyyyMmDd("20000101");
+    assertEquals("2000/01/01", actual2.toYyyyMmDdWithSeparator().get());
   }
 
   @Test
   public void testToYyyyMmDdHhMmSs() {
-    var actual = TimeStampBase.of(Optional.of(LocalDateTime.of(2000, 1, 1, 2, 3, 4)));
-    assertEquals("2000/01/01 02:03:04", actual.toYyyyMmDdHhMmSs().get());
+    var actual1 = TimeStampBase.init();
+    assertEquals(Optional.empty(), actual1.toYyyyMmDdHhMmSs());
+
+    var actual2 = TimeStampBase.of(Optional.of(LocalDateTime.of(2000, 1, 1, 2, 3, 4)));
+    assertEquals("2000/01/01 02:03:04", actual2.toYyyyMmDdHhMmSs().get());
   }
 
   @Test
@@ -244,6 +250,7 @@ public class TimeStampBaseTest {
     var actual3 = TimeStampBase.init();
     assertTrue(actual3.isNotEquel(actual1));
     assertTrue(actual1.isNotEquel(actual3));
+    assertFalse(actual1.isNotEquel(actual1));
 
   }
 
@@ -256,6 +263,8 @@ public class TimeStampBaseTest {
     var actual3 = TimeStampBase.init();
     var actual4 = TimeStampBase.init();
     assertFalse(actual3.isBefore(actual4));
+    assertFalse(actual1.isBefore(actual4));
+    assertFalse(actual3.isBefore(actual1));
   }
 
   @Test
@@ -267,6 +276,8 @@ public class TimeStampBaseTest {
     var actual3 = TimeStampBase.init();
     var actual4 = TimeStampBase.init();
     assertFalse(actual3.isAfter(actual4));
+    assertFalse(actual1.isAfter(actual4));
+    assertFalse(actual3.isAfter(actual1));
 
   }
 
@@ -287,7 +298,7 @@ public class TimeStampBaseTest {
     assertEquals("2000-01-03T02:03:04", actual1.toString());
 
     var actual3 = TimeStampBase.init();
-    assertNull(actual3.toString());
+    assertEquals("Optional.empty", actual3.toString());
 
   }
 

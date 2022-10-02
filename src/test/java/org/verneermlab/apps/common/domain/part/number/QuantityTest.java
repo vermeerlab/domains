@@ -304,7 +304,7 @@ public class QuantityTest {
     assertEquals("111", actual1.toString());
 
     var actual2 = Quantity.of(Optional.empty());
-    assertEquals(null, actual2.toString());
+    assertEquals("Optional.empty", actual2.toString());
   }
 
   @Test

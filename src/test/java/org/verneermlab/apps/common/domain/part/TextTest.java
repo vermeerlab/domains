@@ -200,7 +200,7 @@ public class TextTest {
   @Test
   public void testToString() {
     assertEquals("", Text.of("").toString());
-    assertNull(Text.init().toString());
+    assertEquals("Optional.empty", Text.init().toString());
   }
 
   @Test

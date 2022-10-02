@@ -49,7 +49,7 @@ public class DateBaseTest {
     assertEquals("20000101", actual.toYyyyMmDd().get());
 
     var actualBlank = DateBase.fromYyyyMmDd("");
-    assertEquals(DateBase.init(), actualBlank);
+    assertEquals(Optional.empty(), actualBlank.toYyyyMmDd());
 
     var actualNull = DateBase.fromYyyyMmDd(null);
     assertEquals(DateBase.init(), actualNull);
@@ -63,6 +63,10 @@ public class DateBaseTest {
   public void testToYyyyMm() {
     var actual = DateBase.fromYyyyMmDd("20000101");
     assertEquals("200001", actual.toYyyyMm().get());
+
+    var actualBlank = DateBase.fromYyyyMmDd("");
+    assertEquals(Optional.empty(), actualBlank.toYyyyMm());
+
   }
 
   @Test
@@ -77,6 +81,10 @@ public class DateBaseTest {
     } catch (ParseException ex) {
       fail();
     }
+
+    var actual2 = DateBase.init();
+    assertEquals(Optional.empty(), actual2.toDate());
+
   }
 
   @Test
@@ -85,6 +93,10 @@ public class DateBaseTest {
     assertEquals(LocalDateTime.of(2000, 1, 1, 0, 0),
             actual.toLocalDateTime().get()
     );
+
+    var actual2 = DateBase.init();
+    assertEquals(Optional.empty(), actual2.toLocalDateTime());
+
   }
 
   @Test
@@ -266,7 +278,7 @@ public class DateBaseTest {
     var actual = DateBase.fromYyyyMmDd("20000101");
     assertEquals(LocalDate.of(2000, 1, 1).toString(), actual.toString());
     assertEquals("2000-01-01", actual.toString());
-    assertNull(DateBase.init().toString());
+    assertEquals("Optional.empty", DateBase.init().toString());
   }
 
   @Test

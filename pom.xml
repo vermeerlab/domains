@@ -12,12 +12,22 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
-        <junit.version>5.8.2</junit.version>
+        
+        <junit.version>5.9.0</junit.version>
         <jacoco.version>0.8.8</jacoco.version>
-        <surefire.version>3.0.0-M7</surefire.version>
+        
         <checkstyle.version>3.2.0</checkstyle.version>
-        <javadoc.version>3.4.0</javadoc.version>
         <com.puppycrawl.tools.checkstyle.version>10.3.1</com.puppycrawl.tools.checkstyle.version>
+        <checkstyle.configLocation>checkstyle-config.xml</checkstyle.configLocation>
+        
+        <spotbugs.maven.version>4.7.1.1</spotbugs.maven.version>
+        <spotbugs.version>4.7.2</spotbugs.version>
+
+        <maven.site.version>3.12.0</maven.site.version>
+        <maven.resources.version>3.3.0</maven.resources.version>
+        <maven.project.info.reports.version>3.4.0</maven.project.info.reports.version>
+        <maven.javadoc.version>3.4.0</maven.javadoc.version>
+        <maven.jxr.version>3.2.0</maven.jxr.version>
     </properties>
 
     <dependencies>
@@ -39,46 +49,21 @@
             <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
-        
-        <dependency>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-checkstyle-plugin</artifactId>
-            <version>${checkstyle.version}</version>
-        </dependency>
-              
+         
     </dependencies>
 
     <build>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>org.eclipse.m2e</groupId>
-                    <artifactId>lifecycle-mapping</artifactId>
-                    <version>1.0.0</version>
-                    <configuration>
-                        <lifecycleMappingMetadata>
-                            <pluginExecutions>
-                                <pluginExecution>
-                                    <pluginExecutionFilter>
-                                        <groupId>org.apache.maven.plugins</groupId>
-                                        <artifactId>maven-checkstyle-plugin</artifactId>
-                                        <versionRange>[1.0.0,)</versionRange>
-                                        <goals>
-                                            <goal>check</goal>
-                                        </goals>
-                                    </pluginExecutionFilter>
-                                    <action>
-                                        <ignore/>
-                                    </action>
-                                </pluginExecution>
-                            </pluginExecutions>
-                        </lifecycleMappingMetadata>
-                    </configuration>
-                </plugin>
-            </plugins>
-        </pluginManagement>
-
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-site-plugin</artifactId>
+                <version>${maven.site.version}</version>
+                <configuration>
+                    <locales>ja_JP</locales>
+                    <relativizeDecorationLinks>false</relativizeDecorationLinks>
+                </configuration>
+            </plugin>
+
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
@@ -96,30 +81,66 @@
                             <goal>report</goal>
                         </goals>
                     </execution>
+                    <execution>
+                        <id>default-check</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <rule>
+                                    <element>PACKAGE</element>
+                                    <limits>
+                                        <limit>
+                                            <counter>LINE</counter>
+                                            <value>COVEREDRATIO</value>
+                                            <minimum>0.80</minimum>
+                                        </limit>
+                                        <limit>
+                                            <counter>BRANCH</counter>
+                                            <value>COVEREDRATIO</value>
+                                            <minimum>0.80</minimum>
+                                        </limit>
+                                    </limits>
+                                </rule>
+                            </rules>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>${surefire.version}</version>
-            </plugin>
 
+            <plugin>
+                <groupId>com.github.spotbugs</groupId>
+                <artifactId>spotbugs-maven-plugin</artifactId>
+                <version>${spotbugs.maven.version}</version>
+                <executions>
+                    <execution>
+                        <id>default-check</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                        <configuration>
+                            <debug>true</debug>
+                        </configuration>
+                    </execution>
+                </executions>
+
+                <dependencies>
+                    <!-- overwrite dependency on spotbugs if you want to specify the version of spotbugs -->
+                    <dependency>
+                        <groupId>com.github.spotbugs</groupId>
+                        <artifactId>spotbugs</artifactId>
+                        <version>${spotbugs.version}</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+     
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
                 <version>${checkstyle.version}</version>
-                <dependencies>
-                    <dependency>
-                        <groupId>com.puppycrawl.tools</groupId>
-                        <artifactId>checkstyle</artifactId>
-                        <version>${com.puppycrawl.tools.checkstyle.version}</version>
-                    </dependency>
-                </dependencies>
-                <configuration>
-                    <failsOnError>true</failsOnError>
-                    <configLocation>./google_checks.xml</configLocation>
-                    <violationSeverity>warning</violationSeverity>
-                </configuration>
                 <executions>
                     <execution>
                         <id>validate</id>
@@ -128,22 +149,27 @@
                             <goal>check</goal>
                         </goals>
                     </execution>
+                    <execution>
+                        <id>checkstyle</id>
+                        <goals>
+                            <goal>checkstyle</goal>
+                        </goals>
+                    </execution>
                 </executions>
-            </plugin>
-         
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>${javadoc.version}</version>
                 <configuration>
-                    <author>true</author>
-                    <source>${maven.compiler.source}</source>
-                    <show>protected</show>
+                    <configLocation>${checkstyle.configLocation}</configLocation>
                     <encoding>${project.build.sourceEncoding}</encoding>
-                    <charset>${project.build.sourceEncoding}</charset>
-                    <docencoding>${project.build.sourceEncoding}</docencoding>
+                    <consoleOutput>true</consoleOutput>
+                    <failsOnError>true</failsOnError>
                 </configuration>
-            </plugin>      
+                <dependencies>
+                    <dependency>
+                        <groupId>com.puppycrawl.tools</groupId>
+                        <artifactId>checkstyle</artifactId>
+                        <version>${com.puppycrawl.tools.checkstyle.version}</version>
+                    </dependency>
+                </dependencies>
+            </plugin>  
 
         </plugins>
     </build>
@@ -152,8 +178,35 @@
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>${maven.resources.version}</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-project-info-reports-plugin</artifactId>
+                <version>${maven.project.info.reports.version}</version>
+            </plugin>
+            
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>report</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+            
+            <plugin>
+                <groupId>com.github.spotbugs</groupId>
+                <artifactId>spotbugs-maven-plugin</artifactId>
+            </plugin>
+            
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
-                <version>${checkstyle.version}</version>
                 <reportSets>
                     <reportSet>
                         <reports>
@@ -161,7 +214,32 @@
                         </reports>
                     </reportSet>
                 </reportSets>
+                <configuration>
+                    <configLocation>${checkstyle.configLocation}</configLocation>
+                    <encoding>${project.build.sourceEncoding}</encoding>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jxr-plugin</artifactId>
+                <version>${maven.jxr.version}</version>
+            </plugin>
+        
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>${maven.javadoc.version}</version>
+                <configuration>
+                    <author>true</author>
+                    <show>protected</show>
+                    <source>${maven.compiler.source}</source>
+                    <encoding>${project.build.sourceEncoding}</encoding>
+                    <charset>${project.build.sourceEncoding}</charset>
+                    <docencoding>${project.build.sourceEncoding}</docencoding>
+                </configuration>
             </plugin>
         </plugins>
+    
     </reporting>
 </project>

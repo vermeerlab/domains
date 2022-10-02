@@ -268,7 +268,7 @@ public class BigDecimalCalculator implements Calculator {
   @Override
   public String toString() {
     var str = this.isEmpty()
-            ? null
+            ? "Optional.empty"
             : this.getCalcValue().toPlainString();
 
     return str;
