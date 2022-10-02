@@ -262,7 +262,7 @@ public class PercentageTest {
     assertEquals("1.11", actual1.toString());
 
     var actual2 = Percentage.of(Optional.empty());
-    assertEquals(null, actual2.toString());
+    assertEquals("Optional.empty", actual2.toString());
   }
 
   @Test

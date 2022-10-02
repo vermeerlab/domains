@@ -33,7 +33,7 @@ public class Message {
   }
 
   public Object[] getArgs() {
-    return args;
+    return Arrays.copyOf(args, args.length);
   }
 
   /**

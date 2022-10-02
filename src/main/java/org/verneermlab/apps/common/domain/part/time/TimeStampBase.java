@@ -457,7 +457,7 @@ public class TimeStampBase implements IsEmpty {
   @Override
   public String toString() {
     if (this.isEmpty()) {
-      return null;
+      return "Optional.empty";
     }
     return this.value.get().toString();
   }

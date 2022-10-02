@@ -18,9 +18,9 @@ import org.verneermlab.apps.common.domain.type.IsEmpty;
  *
  * @author Yamashita.Takahiro
  */
-public class Text implements IsEmpty {
+public final class Text implements IsEmpty {
 
-  private Optional<String> value;
+  private final Optional<String> value;
 
   private Text(Optional<String> value) {
     this.value = value;
@@ -281,6 +281,6 @@ public class Text implements IsEmpty {
 
   @Override
   public String toString() {
-    return this.value.orElse(null);
+    return this.value.orElse("Optional.empty");
   }
 }
