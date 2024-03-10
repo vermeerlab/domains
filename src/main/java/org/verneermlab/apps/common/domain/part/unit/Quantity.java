@@ -22,10 +22,10 @@ public class Quantity implements Plus<Quantity>, Minus<Quantity>, Multiply<Quant
   private static final int DEFAULT_SCALE = 2;
   private static final RoundingMode DEFAULT_ROUND_MODE = RoundingMode.HALF_UP;
 
-  private BigDecimal value;
+  private final BigDecimal value;
 
   private Quantity() {
-    Integer value = null;
+    this.value = null;
   }
 
   private Quantity(BigDecimal value) {

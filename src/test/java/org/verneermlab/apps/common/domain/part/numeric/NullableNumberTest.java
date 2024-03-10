@@ -34,6 +34,7 @@ public class NullableNumberTest {
 
   }
 
+  @SuppressWarnings("unlikely-arg-type")
   @Test
   public void testForCoverage() {
     var result1 = NullableNumber.of(1);
