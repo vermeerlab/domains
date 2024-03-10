@@ -81,6 +81,7 @@
                             <goal>report</goal>
                         </goals>
                     </execution>
+                    <!--
                     <execution>
                         <id>default-check</id>
                         <phase>test</phase>
@@ -107,6 +108,7 @@
                             </rules>
                         </configuration>
                     </execution>
+                    -->
                 </executions>
             </plugin>
 

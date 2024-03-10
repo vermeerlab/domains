@@ -5,7 +5,7 @@ import java.util.Optional;
 import java.util.function.Function;
 
 /**
- * Enumのコード値からEnumクラスから逆引きをします.
+ * Enumのコード値からEnumクラスから逆引きします.
  * <p>
  * Enumクラスにstaticメソッドを追加して使用することを想定しています.
  * </p>
