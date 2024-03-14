@@ -1,4 +1,4 @@
-package org.verneermlab.base.domain.type.time.behavior;
+package org.verneermlab.base.domain.type.time.behavior.localdate;
 
 import org.verneermlab.base.domain.type.time.NullableDateType;
 
@@ -6,7 +6,7 @@ import org.verneermlab.base.domain.type.time.NullableDateType;
  * 日付比較.
  *
  * @author Yamashita.Takahiro
- * @param <T>
+ * @param <T> 本インターフェースを実装した具象クラスの型
  */
 public interface DateComparator<T extends NullableDateType<T>> extends NullableDateType<T> {
 

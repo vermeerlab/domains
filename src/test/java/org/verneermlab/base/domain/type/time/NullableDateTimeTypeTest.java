@@ -34,6 +34,16 @@ public class NullableDateTimeTypeTest {
 
   }
 
+  @Test
+  public void testToUnixTime() {
+    var actual1 = new NullableDateTimeTypeImpl(LocalDateTime.of(2024, Month.MARCH, 1, 2, 3, 4));
+    Assertions.assertEquals(1709226184L, actual1.toUnixTime().get());
+
+    var actual2 = new NullableDateTimeTypeImpl(null);
+    Assertions.assertTrue(actual2.toUnixTime().isEmpty());
+
+  }
+
   public static class NullableDateTimeTypeImpl implements NullableDateTimeType<NullableDateTimeTypeImpl> {
 
     private final LocalDateTime value;

@@ -190,7 +190,7 @@ public class TextTest {
   @Test
   public void testToString() {
     assertEquals("", Text.of("").toString());
-    assertEquals("", Text.createNoValue().toString());
+    assertEquals("null", Text.createNoValue().toString());
   }
 
   @Test

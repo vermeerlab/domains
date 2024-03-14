@@ -1,17 +1,17 @@
-package org.verneermlab.base.domain.type.time.behavior;
+package org.verneermlab.base.domain.type.time.behavior.localdate;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.function.UnaryOperator;
-import org.verneermlab.base.domain.type.time.NullableDateTimeType;
+import org.verneermlab.base.domain.type.time.NullableDateType;
 import org.verneermlab.base.internal.domain.type.InstanceCreator;
 
 /**
- * 保持しているLocalDateTimeを編集.
+ * 保持しているLocalDateを編集.
  *
  * @author Yamashita.Takahiro
  * @param <T> 本インターフェースを実装した具象クラスの型
  */
-public interface DateTimeUnaryOperator<T> extends NullableDateTimeType<T>, InstanceCreator<T> {
+public interface DateUnaryOperator<T> extends NullableDateType<T>, InstanceCreator<T> {
 
   /**
    * callbackを用いて保持している値を編集して新しいインスタンスを生成します.
@@ -19,8 +19,8 @@ public interface DateTimeUnaryOperator<T> extends NullableDateTimeType<T>, Insta
    * @param callback コールバック関数
    * @return 編集後の新しいインスタンス.
    */
-  default T apply(UnaryOperator<LocalDateTime> callback) {
-    LocalDateTime updated = callback.apply(this.getNullableValue().orElse(null));
+  default T apply(UnaryOperator<LocalDate> callback) {
+    LocalDate updated = callback.apply(this.getNullableValue().orElse(null));
     return newInstanceFromThis(updated);
   }
 }

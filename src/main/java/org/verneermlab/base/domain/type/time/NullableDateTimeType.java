@@ -3,6 +3,7 @@ package org.verneermlab.base.domain.type.time;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Optional;
 import java.util.TimeZone;
 import org.verneermlab.base.domain.type.SinglePropertyObjectType;
@@ -37,7 +38,7 @@ public interface NullableDateTimeType<T> extends SinglePropertyObjectType<LocalD
   }
 
   /**
-   * LocalDateへ変換して返却します.
+   * プロパティ値をLocalDateへ変換して返却します.
    *
    * @return LocalDate
    */
@@ -49,4 +50,18 @@ public interface NullableDateTimeType<T> extends SinglePropertyObjectType<LocalD
     var dateTime = this.getNullableValue().get();
     return Optional.of(LocalDate.of(dateTime.getYear(), dateTime.getMonth(), dateTime.getDayOfMonth()));
   }
+
+  /**
+   * プロパティ値をUnixTimeへ変換します.
+   *
+   * @return UnixTime
+   */
+  default Optional<Long> toUnixTime() {
+    if (this.isEmpty()) {
+      return Optional.empty();
+    }
+    var zonedDateTime = ZonedDateTime.of(this.getNullableValue().get(), this.getZoneId());
+    return Optional.of(zonedDateTime.toEpochSecond());
+  }
+
 }

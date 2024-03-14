@@ -141,7 +141,7 @@ public final class Price implements Plus<Price>, Minus<Price>, Multiply<Price> {
 
   @Override
   public String toString() {
-    return this.getOrZero().toPlainString();
+    return Objects.toString(value);
   }
 
 }

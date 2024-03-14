@@ -139,7 +139,7 @@ public class Percentage implements Plus<Percentage>, Minus<Percentage>, Multiply
 
   @Override
   public String toString() {
-    return this.getOrZero().toPlainString();
+    return Objects.toString(value);
   }
 
 }

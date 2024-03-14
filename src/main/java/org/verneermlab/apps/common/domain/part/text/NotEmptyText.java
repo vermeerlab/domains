@@ -83,4 +83,8 @@ public final class NotEmptyText implements NotEmptyType<String>,
     return Objects.equals(this.getNullableValue().orElse(null), other.getNullableValue().orElse(null));
   }
 
+  @Override
+  public String toString() {
+    return Objects.toString(value);
+  }
 }

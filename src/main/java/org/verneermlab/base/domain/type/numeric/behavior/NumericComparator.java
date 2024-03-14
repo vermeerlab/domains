@@ -6,7 +6,7 @@ import org.verneermlab.base.domain.type.numeric.NullableNumberType;
  * 数値比較.
  *
  * @author Yamashita.Takahiro
- * @param <T>
+ * @param <T> 本インターフェースを実装した具象クラスの型
  */
 public interface NumericComparator<T extends NullableNumberType<T>> extends NullableNumberType<T> {
 

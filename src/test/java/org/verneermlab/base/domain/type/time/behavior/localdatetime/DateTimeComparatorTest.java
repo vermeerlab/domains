@@ -1,4 +1,4 @@
-package org.verneermlab.base.domain.type.time.behavior;
+package org.verneermlab.base.domain.type.time.behavior.localdatetime;
 
 import java.time.LocalDateTime;
 import java.time.Month;
