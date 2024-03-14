@@ -64,7 +64,7 @@ public class NullableNumber implements NullableNumberType<BigDecimal> {
 
   @Override
   public String toString() {
-    return this.getOrZero().toPlainString();
+    return Objects.toString(value);
   }
 
 }

@@ -171,7 +171,7 @@ public class Quantity implements Plus<Quantity>, Minus<Quantity>, Multiply<Quant
 
   @Override
   public String toString() {
-    return this.getOrZero().toPlainString();
+    return Objects.toString(value);
   }
 
 }

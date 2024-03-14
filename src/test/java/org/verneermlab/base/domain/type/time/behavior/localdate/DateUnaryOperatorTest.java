@@ -1,15 +1,15 @@
-package org.verneermlab.base.domain.type.time.behavior;
+package org.verneermlab.base.domain.type.time.behavior.localdate;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.Optional;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class DateTimeUnaryOperatorTest {
+public class DateUnaryOperatorTest {
 
   @Test
   public void testApply() {
-    var impl = new DateTimeUnaryOperatorImpl(LocalDateTime.of(2024, 1, 1, 2, 3));
+    var impl = new DateUnaryOperatorImpl(LocalDate.of(2024, 1, 1));
     var actual1 = impl.apply(value -> {
       return value;
     });
@@ -23,18 +23,19 @@ public class DateTimeUnaryOperatorTest {
 
     Assertions.assertNotEquals(impl.getNullableValue().get(), actual2.getNullableValue().get());
     Assertions.assertEquals(2, actual2.getNullableValue().get().getDayOfMonth());
+
   }
 
-  public static class DateTimeUnaryOperatorImpl implements DateTimeUnaryOperator<DateTimeUnaryOperatorImpl> {
+  public static class DateUnaryOperatorImpl implements DateUnaryOperator<DateUnaryOperatorImpl> {
 
-    private LocalDateTime value;
+    private LocalDate value;
 
-    public DateTimeUnaryOperatorImpl(LocalDateTime value) {
+    public DateUnaryOperatorImpl(LocalDate value) {
       this.value = value;
     }
 
     @Override
-    public Optional<LocalDateTime> getNullableValue() {
+    public Optional<LocalDate> getNullableValue() {
       return Optional.ofNullable(value);
     }
   }

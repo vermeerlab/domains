@@ -72,7 +72,7 @@ public class NotEmptyNumber implements NotEmptyType<BigDecimal>, NullableNumberT
 
   @Override
   public String toString() {
-    return this.getOrZero().toPlainString();
+    return Objects.toString(value);
   }
 
 }

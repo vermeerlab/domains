@@ -73,5 +73,6 @@ public class NotEmptyTextTest {
     assertNotEquals(obj, null);
     assertNotEquals(obj, "");
     obj.substring(-1);
+    assertEquals("1", obj.toString());
   }
 }

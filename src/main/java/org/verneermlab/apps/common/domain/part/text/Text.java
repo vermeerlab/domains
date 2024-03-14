@@ -82,6 +82,6 @@ public final class Text implements TextZeroPadding<Text>,
 
   @Override
   public String toString() {
-    return this.getOrDefault();
+    return Objects.toString(value);
   }
 }
