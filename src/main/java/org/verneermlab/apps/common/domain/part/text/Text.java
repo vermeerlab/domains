@@ -3,6 +3,7 @@ package org.verneermlab.apps.common.domain.part.text;
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.Optional;
+import org.verneermlab.base.domain.type.text.behavior.TextJoin;
 import org.verneermlab.base.domain.type.text.behavior.TextRemoveReturn;
 import org.verneermlab.base.domain.type.text.behavior.TextSubstring;
 import org.verneermlab.base.domain.type.text.behavior.TextUnaryOperator;
@@ -16,7 +17,7 @@ import org.verneermlab.base.domain.type.text.behavior.TextZeroPadding;
  *
  * @author Yamashita.Takahiro
  */
-public final class Text implements TextZeroPadding<Text>,
+public final class Text implements TextZeroPadding<Text>, TextJoin<Text>,
         TextRemoveReturn<Text>, TextSubstring<Text>, TextUnaryOperator<Text>, Serializable {
 
   private static final long serialVersionUID = 1L;

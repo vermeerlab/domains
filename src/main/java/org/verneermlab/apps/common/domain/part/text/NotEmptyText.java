@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Objects;
 import java.util.Optional;
 import org.verneermlab.base.domain.type.NotEmptyType;
+import org.verneermlab.base.domain.type.text.behavior.TextJoin;
 import org.verneermlab.base.domain.type.text.behavior.TextRemoveReturn;
 import org.verneermlab.base.domain.type.text.behavior.TextSubstring;
 import org.verneermlab.base.domain.type.text.behavior.TextUnaryOperator;
@@ -15,7 +16,7 @@ import org.verneermlab.base.domain.type.text.behavior.TextZeroPadding;
  * @author Yamashita.Takahiro
  */
 public final class NotEmptyText implements NotEmptyType<String>,
-        TextZeroPadding<NotEmptyText>, TextRemoveReturn<NotEmptyText>,
+        TextJoin<NotEmptyText>, TextZeroPadding<NotEmptyText>, TextRemoveReturn<NotEmptyText>,
         TextSubstring<NotEmptyText>, TextUnaryOperator<NotEmptyText>, Serializable {
 
   private static final long serialVersionUID = 1L;

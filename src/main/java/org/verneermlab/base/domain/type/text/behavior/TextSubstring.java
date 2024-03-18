@@ -3,6 +3,7 @@ package org.verneermlab.base.domain.type.text.behavior;
 import java.text.BreakIterator;
 import java.util.ArrayList;
 import org.verneermlab.base.domain.type.text.NullableTextType;
+import org.verneermlab.base.internal.domain.type.InstanceCreator;
 
 /**
  * 文字列の部分文字列である文字列を取得.
@@ -10,7 +11,7 @@ import org.verneermlab.base.domain.type.text.NullableTextType;
  * @author Yamashita.Takahiro
  * @param <T> 本インターフェースを実装した具象クラスの型
  */
-public interface TextSubstring<T extends NullableTextType<T>> extends TextJoin<T>, TextLength<T> {
+public interface TextSubstring<T extends NullableTextType<T>> extends InstanceCreator<T>, TextLength<T> {
 
   /**
    * 文字列の部分文字列である文字のインスタンスを返却します.
