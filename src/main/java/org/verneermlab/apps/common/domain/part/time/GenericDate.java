@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 import java.util.Optional;
-import org.verneermlab.base.domain.type.time.NullableDateType;
 import org.verneermlab.base.domain.type.time.behavior.localdate.DateComparator;
 import org.verneermlab.base.domain.type.time.behavior.localdate.DateDaysRange;
 import org.verneermlab.base.domain.type.time.behavior.localdate.DateMonthsRange;
@@ -17,8 +16,7 @@ import org.verneermlab.base.domain.type.time.behavior.localdate.DateYearsRange;
  *
  * @author Yamashita.Takahiro
  */
-public class GenericDate implements NullableDateType<GenericDate>,
-        DateUnaryOperator<GenericDate>, DateComparator<GenericDate>,
+public class GenericDate implements DateUnaryOperator<GenericDate>, DateComparator<GenericDate>,
         DateDaysRange<GenericDate>, DateMonthsRange<GenericDate>,
         DateMonthsShift<GenericDate>, DateYearsRange<GenericDate> {
 
