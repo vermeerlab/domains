@@ -28,7 +28,7 @@ public interface DateMonthsShift<T extends NullableDateType<T>> extends Nullable
   /**
    * 月末日補正をしたインスタンスを返却します.
    *
-   * @return 月初日補正をしたインスタンス
+   * @return 月末日補正をしたインスタンス
    */
   default T endMonth() {
     if (this.isEmpty()) {
